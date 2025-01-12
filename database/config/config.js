@@ -4,7 +4,8 @@ require('dotenv').config();
 module.exports = {
   development: {
     dialect: process.env.DB_DIALECT || 'sqlite',
-    storage: process.env.DB_DEV || path.resolve(__dirname, '../../dev.sqlite3'),
+    storage:
+      process.env.DB_NAME || path.resolve(__dirname, '../../dev.sqlite3'),
     logging: process.env.DB_LOGGING === 'true',
   },
   test: {
@@ -15,7 +16,7 @@ module.exports = {
   production: {
     dialect: process.env.DB_DIALECT || 'sqlite',
     storage:
-      process.env.DB_PROD || path.resolve(__dirname, '../../prod.sqlite3'),
+      process.env.DB_NAME || path.resolve(__dirname, '../../prod.sqlite3'),
     logging: process.env.DB_LOGGING === 'true',
   },
 };
