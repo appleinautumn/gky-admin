@@ -1,20 +1,22 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SequelizeModule } from '@nestjs/sequelize';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { Lives } from './lives/lives.model';
 import { LivesModule } from './lives/lives.module';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env',
+    }),
     SequelizeModule.forRoot({
       dialect: 'sqlite',
-      storage: process.env.DEV_DB_STORAGE, // Use the storage path from environment variables
-      // models: [__dirname + '/**/*.model.ts'],
-      models: [Lives],
-      synchronize: false,
+      storage: process.env.DB_NAME,
       logging: process.env.DB_LOGGING === 'true',
+      synchronize: false,
     }),
     LivesModule,
   ],
