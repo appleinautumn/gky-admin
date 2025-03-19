@@ -1,0 +1,33 @@
+---
+import MainLayout from '../layouts/main.astro';
+import DashboardNav from '../components/DashboardNav.astro';
+
+// Check if user is logged in
+const session = localStorage.getItem('session');
+if (!session) {
+  return Astro.redirect('/login');
+}
+
+const user = JSON.parse(session).user;
+---
+
+<MainLayout title="Dashboard">
+  <div class="min-h-screen bg-gray-100">
+    <DashboardNav />
+    
+    <main class="py-10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h1 class="text-3xl font-bold text-gray-900">Dashboard</h1>
+        
+        <div class="mt-4">
+          <div class="bg-white shadow rounded-lg p-6">
+            <h2 class="text-lg font-medium text-gray-900">Welcome, {user.firstName}!</h2>
+            <p class="mt-1 text-sm text-gray-500">
+              You're logged in successfully.
+            </p>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</MainLayout> 
