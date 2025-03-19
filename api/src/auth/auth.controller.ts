@@ -2,7 +2,6 @@ import {
   Controller,
   Post,
   Body,
-  ValidationPipe,
   UseInterceptors,
   HttpException,
   HttpStatus,
@@ -10,6 +9,7 @@ import {
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { TransformInterceptor } from '../interceptors/transform.interceptor';
+import { CustomValidationPipe } from '../pipes/validation.pipe';
 
 @Controller('auth')
 @UseInterceptors(TransformInterceptor)
@@ -37,7 +37,7 @@ export class AuthController {
   }
 
   @Post('register')
-  async register(@Body(ValidationPipe) userData: RegisterDto) {
+  async register(@Body(new CustomValidationPipe()) userData: RegisterDto) {
     try {
       const result = await this.authService.register(userData);
       return result;
