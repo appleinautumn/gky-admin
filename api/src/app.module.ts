@@ -1,10 +1,12 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { SequelizeModule } from '@nestjs/sequelize';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { LivesModule } from './lives/lives.module';
+import { AuthModule } from './auth/auth.module';
+import { User } from './users/users.model';
 
 @Module({
   imports: [
@@ -17,8 +19,10 @@ import { LivesModule } from './lives/lives.module';
       storage: process.env.DB_NAME,
       logging: process.env.DB_LOGGING === 'true',
       synchronize: false,
+      models: [User],
     }),
     LivesModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
