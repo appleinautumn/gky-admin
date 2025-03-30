@@ -7,6 +7,7 @@ import { AppService } from './app.service';
 import { LivesModule } from './lives/lives.module';
 import { AuthModule } from './auth/auth.module';
 import { User } from './users/users.model';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { User } from './users/users.model';
       synchronize: false,
       models: [User],
     }),
+    UsersModule,
     LivesModule,
     AuthModule,
   ],
