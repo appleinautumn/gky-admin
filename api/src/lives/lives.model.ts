@@ -1,22 +1,22 @@
-import { Column, Model, Table } from 'sequelize-typescript';
+import { Column, Model, Table, DataType } from 'sequelize-typescript';
 
 @Table({
   tableName: 'lives',
   timestamps: true, // to handle `created_at` and `updated_at`
 })
 export class Lives extends Model<Lives> {
-  @Column
+  @Column(DataType.STRING)
   ku1live: string;
 
-  @Column
+  @Column(DataType.STRING)
   ku2live: string;
 
-  @Column
+  @Column(DataType.STRING)
   ku5live: string;
 
-  @Column({ field: 'created_at' })
+  @Column({ field: 'created_at', type: DataType.DATE })
   createdAt: Date;
 
-  @Column({ field: 'updated_at' })
+  @Column({ field: 'updated_at', type: DataType.DATE })
   updatedAt: Date;
 }
