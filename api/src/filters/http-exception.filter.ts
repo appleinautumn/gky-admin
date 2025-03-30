@@ -12,15 +12,18 @@ export class HttpExceptionFilter implements ExceptionFilter {
   catch(exception: any, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
-    const status = exception instanceof HttpException
-      ? exception.getStatus()
-      : HttpStatus.INTERNAL_SERVER_ERROR;
-    const exceptionResponse = exception instanceof HttpException
-      ? exception.getResponse()
-      : exception;
+    const status =
+      exception instanceof HttpException
+        ? exception.getStatus()
+        : HttpStatus.INTERNAL_SERVER_ERROR;
+    const exceptionResponse =
+      exception instanceof HttpException ? exception.getResponse() : exception;
 
     // Handle NestJS default exception format
-    if (typeof exceptionResponse === 'object' && 'message' in exceptionResponse) {
+    if (
+      typeof exceptionResponse === 'object' &&
+      'message' in exceptionResponse
+    ) {
       response.status(status).json({
         error: {
           message: exceptionResponse.message,
@@ -38,10 +41,11 @@ export class HttpExceptionFilter implements ExceptionFilter {
     // Otherwise, format it
     response.status(status).json({
       error: {
-        message: typeof exceptionResponse === 'object' 
-          ? (exceptionResponse as any).message || 'An error occurred'
-          : exceptionResponse,
+        message:
+          typeof exceptionResponse === 'object'
+            ? (exceptionResponse as any).message || 'An error occurred'
+            : exceptionResponse,
       },
     });
   }
-} 
+}

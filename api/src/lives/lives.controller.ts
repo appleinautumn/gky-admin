@@ -1,13 +1,13 @@
 import {
   Controller,
   Get,
-  Post,
   Put,
-  Delete,
   Param,
   Body,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { LivesService } from './lives.service';
+import { UpdateLiveDto } from './dto/update-live.dto';
 
 @Controller('lives')
 export class LivesController {
@@ -18,32 +18,17 @@ export class LivesController {
     return this.livesService.getAllLives();
   }
 
-  @Get(':id')
-  async getById(@Param('id') id: number) {
-    return this.livesService.getLiveById(id);
-  }
-
-  @Post()
-  async create(
-    @Body('ku1live') ku1live: string,
-    @Body('ku2live') ku2live: string,
-    @Body('ku5live') ku5live: string,
-  ) {
-    return this.livesService.createLive(ku1live, ku2live, ku5live);
-  }
-
   @Put(':id')
   async update(
-    @Param('id') id: number,
-    @Body('ku1live') ku1live: string,
-    @Body('ku2live') ku2live: string,
-    @Body('ku5live') ku5live: string,
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateLiveDto: UpdateLiveDto,
   ) {
-    return this.livesService.updateLive(id, ku1live, ku2live, ku5live);
-  }
-
-  @Delete(':id')
-  async delete(@Param('id') id: number) {
-    return this.livesService.deleteLive(id);
+    // If validation passes, proceed with the update
+    return this.livesService.updateLive(
+      id,
+      updateLiveDto.ku1live,
+      updateLiveDto.ku2live,
+      updateLiveDto.ku5live,
+    );
   }
 }

@@ -4,20 +4,27 @@ export class CustomValidationPipe extends ValidationPipe {
   constructor() {
     super({
       exceptionFactory: (errors) => {
-        const messages = errors.map(error => 
-          Object.values(error.constraints || {})
-        ).flat();
-        
+        const messages = errors
+          .map((error) => Object.values(error.constraints || {}))
+          .flat();
+
         return new BadRequestException({
           error: {
             message: messages,
-            details: errors.map(error => ({
-              field: error.property,
-              constraints: error.constraints,
-            })),
+            // details: errors.map((error) => ({
+            //   field: error.property,
+            //   constraints: error.constraints,
+            // })),
           },
         });
       },
+      whitelist: true,
+      transform: true,
+      forbidNonWhitelisted: true,
+      validationError: {
+        target: false,
+        value: true,
+      },
     });
   }
-} 
+}
