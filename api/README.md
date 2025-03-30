@@ -17,20 +17,77 @@ This NestJS application serves as the backend for managing various aspects of th
 - **Database Integration:** Utilizes a database (e.g., PostgreSQL, MySQL) for persistent data storage.
 - **Data Validation:** Ensures data integrity through robust validation mechanisms.
 
+## Prerequisites
+
+- Node.js (v18 or higher)
+- npm or yarn
+- SQLite3
+
+## Installation
+
+1. Clone the repository
+2. Install dependencies:
+
+```bash
+npm install
+```
+
+3. Create a `.env` file in the root directory with the following variables:
+
+```env
+JWT_SECRET=your_jwt_secret_here
+```
+
+## Running the Application
+
+Development mode:
+
+```bash
+npm run start:dev
+```
+
+Production mode:
+
+```bash
+npm run build
+npm run start:prod
+```
+
+## User Management
+
+### Creating New Users
+
+Since the public registration endpoint has been removed for security reasons, new users can only be created using the command-line script:
+
+```bash
+npm run register-user <email> <password> <firstName> <lastName>
+```
+
+Example:
+
+```bash
+npm run register-user "admin@church.com" "admin123" "Admin" "User"
+```
+
+The script will:
+
+1. Validate the input
+2. Create a new user with the provided details
+3. Hash the password securely
+4. Return the created user information (without the password)
+
 ## API Routes
 
 The API exposes the following endpoints:
 
 ### Authentication
 
-- `POST /auth/login` - User login
-- `POST /auth/register` - User registration
+- `POST /auth/login` - Login with email and password
 
 ### Lives Management
 
-- `GET /lives` - Get all live links
-- `GET /lives/:id` - Get a specific live link by ID
-- `PUT /lives/:id` - Update an existing live link
+- `GET /lives` - Get all live streams
+- `PUT /lives/:id` - Update a live stream by ID
 
 ### Root
 
@@ -117,3 +174,16 @@ Contributions to the API are welcome! Please see the `CONTRIBUTING.md` file for 
 ## License
 
 MIT
+
+## Testing
+
+```bash
+# unit tests
+npm run test
+
+# e2e tests
+npm run test:e2e
+
+# test coverage
+npm run test:cov
+```
