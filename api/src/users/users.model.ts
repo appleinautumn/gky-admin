@@ -1,4 +1,4 @@
-import { Column, Model, Table } from 'sequelize-typescript';
+import { Column, Model, Table, DataType } from 'sequelize-typescript';
 import * as bcrypt from 'bcrypt';
 
 @Table({
@@ -6,22 +6,22 @@ import * as bcrypt from 'bcrypt';
   timestamps: true,
 })
 export class User extends Model<User> {
-  @Column
+  @Column(DataType.STRING)
   email: string;
 
-  @Column
+  @Column(DataType.STRING)
   password: string;
 
-  @Column({ field: 'first_name' })
+  @Column({ field: 'first_name', type: DataType.STRING })
   firstName: string;
 
-  @Column({ field: 'last_name' })
+  @Column({ field: 'last_name', type: DataType.STRING })
   lastName: string;
 
-  @Column({ field: 'created_at' })
+  @Column({ field: 'created_at', type: DataType.DATE })
   createdAt: Date;
 
-  @Column({ field: 'updated_at' })
+  @Column({ field: 'updated_at', type: DataType.DATE })
   updatedAt: Date;
 
   async validatePassword(password: string): Promise<boolean> {
