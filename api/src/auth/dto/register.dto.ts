@@ -14,4 +14,4 @@ export class RegisterDto {
 
   @IsNotEmpty()
   lastName: string;
-} 
+}

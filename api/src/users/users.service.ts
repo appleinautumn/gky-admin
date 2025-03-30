@@ -21,4 +21,4 @@ export class UsersService {
   }): Promise<User> {
     return this.userModel.create(userData);
   }
-} 
+}

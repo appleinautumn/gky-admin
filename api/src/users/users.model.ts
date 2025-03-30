@@ -27,4 +27,4 @@ export class User extends Model<User> {
   async validatePassword(password: string): Promise<boolean> {
     return bcrypt.compare(password, this.password);
   }
-} 
+}
