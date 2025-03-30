@@ -1,5 +1,14 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { QueryTypes } from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
+
+interface QueryResult {
+  affectedRows: number;
+}
+
+interface CountResult {
+  count: number;
+}
 
 @Injectable()
 export class LivesRepository {
@@ -40,14 +49,22 @@ export class LivesRepository {
     ku2live: string,
     ku5live: string,
   ): Promise<any> {
-    const sql = `
+    // Check if the record exists
+    const existingRecord = await this.findById(id);
+    if (!existingRecord) {
+      throw new NotFoundException(`No live stream found with id ${id}`);
+    }
+
+    // If record exists, perform the update
+    const updateSql = `
       UPDATE lives
       SET ku1live = :ku1live, ku2live = :ku2live, ku5live = :ku5live, updated_at = CURRENT_TIMESTAMP
       WHERE id = :id
     `;
-    const [result] = await this.sequelize.query(sql, {
+    const [result] = await this.sequelize.query(updateSql, {
       replacements: { id, ku1live, ku2live, ku5live },
     });
+
     return result;
   }
 
