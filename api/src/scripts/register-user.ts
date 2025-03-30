@@ -1,10 +1,15 @@
-import * as bcrypt from 'bcrypt';
 import { NestFactory } from '@nestjs/core';
+import * as bcrypt from 'bcrypt';
 
 import { AppModule } from '../app.module';
 import { UsersService } from '../users/users.service';
 
-async function registerUser(email: string, password: string, firstName: string, lastName: string) {
+async function registerUser(
+  email: string,
+  password: string,
+  firstName: string,
+  lastName: string,
+) {
   try {
     // Create a full NestJS application context
     const app = await NestFactory.createApplicationContext(AppModule, {
@@ -14,7 +19,7 @@ async function registerUser(email: string, password: string, firstName: string, 
     // Get UsersService directly
     const usersService = app.get(UsersService);
     console.log('UsersService available:', !!usersService);
-    
+
     // Check if user exists first
     const existingUser = await usersService.findByEmail(email);
     if (existingUser) {
@@ -24,7 +29,7 @@ async function registerUser(email: string, password: string, firstName: string, 
 
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
-    
+
     // Create user directly with UsersService
     const user = await usersService.create({
       email,
@@ -40,7 +45,7 @@ async function registerUser(email: string, password: string, firstName: string, 
       firstName: user.firstName,
       lastName: user.lastName,
     });
-    
+
     await app.close();
   } catch (error) {
     console.error('Failed to register user:', error.message);
@@ -52,9 +57,11 @@ async function registerUser(email: string, password: string, firstName: string, 
 // Get command line arguments
 const args = process.argv.slice(2);
 if (args.length !== 4) {
-  console.log('Usage: npm run register-user <email> <password> <firstName> <lastName>');
+  console.log(
+    'Usage: npm run register-user <email> <password> <firstName> <lastName>',
+  );
   process.exit(1);
 }
 
 const [email, password, firstName, lastName] = args;
-registerUser(email, password, firstName, lastName); 
+registerUser(email, password, firstName, lastName);

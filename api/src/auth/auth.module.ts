@@ -1,12 +1,10 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
-import { SequelizeModule } from '@nestjs/sequelize';
-import { User } from '../users/users.model';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { JwtStrategy } from './jwt.strategy';
-import { UsersService } from '../users/users.service';
+import { UsersModule } from '../users/users.module';
 
 @Module({
   imports: [
@@ -17,9 +15,9 @@ import { UsersService } from '../users/users.service';
         expiresIn: '24h',
       },
     }),
-    SequelizeModule.forFeature([User]),
+    UsersModule,
   ],
-  providers: [AuthService, JwtStrategy, UsersService],
+  providers: [AuthService, JwtStrategy],
   controllers: [AuthController],
   exports: [AuthService],
 })
