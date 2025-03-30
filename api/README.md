@@ -17,6 +17,24 @@ This NestJS application serves as the backend for managing various aspects of th
 - **Database Integration:** Utilizes a database (e.g., PostgreSQL, MySQL) for persistent data storage.
 - **Data Validation:** Ensures data integrity through robust validation mechanisms.
 
+## API Routes
+
+The API exposes the following endpoints:
+
+### Authentication
+- `POST /auth/login` - User login
+- `POST /auth/register` - User registration
+
+### Lives Management
+- `GET /lives` - Get all live streams
+- `GET /lives/:id` - Get a specific live stream by ID
+- `POST /lives` - Create a new live stream
+- `PUT /lives/:id` - Update an existing live stream
+- `DELETE /lives/:id` - Delete a live stream
+
+### Root
+- `GET /` - Health check endpoint
+
 ## Technologies
 
 - NestJS: A progressive Node.js framework for building efficient and scalable server-side applications.
