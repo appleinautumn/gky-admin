@@ -22,18 +22,53 @@ This NestJS application serves as the backend for managing various aspects of th
 The API exposes the following endpoints:
 
 ### Authentication
+
 - `POST /auth/login` - User login
 - `POST /auth/register` - User registration
 
 ### Lives Management
-- `GET /lives` - Get all live streams
-- `GET /lives/:id` - Get a specific live stream by ID
-- `POST /lives` - Create a new live stream
-- `PUT /lives/:id` - Update an existing live stream
-- `DELETE /lives/:id` - Delete a live stream
+
+- `GET /lives` - Get all live links
+- `GET /lives/:id` - Get a specific live link by ID
+- `PUT /lives/:id` - Update an existing live link
 
 ### Root
+
 - `GET /` - Health check endpoint
+
+## API Response Format
+
+### Success Response
+
+All successful responses are wrapped in a `data` field:
+
+```json
+{
+  "data": {
+    // response data here
+  }
+}
+```
+
+### Error Response
+
+All error responses are wrapped in an `error` field with appropriate HTTP status codes:
+
+```json
+{
+  "error": {
+    "message": "Error message here"
+  }
+}
+```
+
+Common HTTP Status Codes:
+
+- `200` - Success
+- `400` - Bad Request
+- `401` - Unauthorized
+- `404` - Not Found
+- `500` - Internal Server Error
 
 ## Technologies
 
