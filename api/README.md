@@ -72,9 +72,22 @@ npm run register-user "admin@church.com" "admin123" "Admin" "User"
 The script will:
 
 1. Validate the input
-2. Create a new user with the provided details
-3. Hash the password securely
-4. Return the created user information (without the password)
+2. Check if a user with the provided email already exists
+3. Hash the password securely using bcrypt
+4. Create a new user with the provided details
+5. Return the created user information (without the password)
+
+Output example:
+```
+User registered successfully: {
+  id: 2,
+  email: 'admin@church.com',
+  firstName: 'Admin',
+  lastName: 'User'
+}
+```
+
+If a user with the provided email already exists, the script will display an error message and exit without creating a new user.
 
 ## API Routes
 
