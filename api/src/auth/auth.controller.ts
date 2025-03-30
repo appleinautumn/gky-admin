@@ -8,11 +8,9 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
-import { TransformInterceptor } from '../interceptors/transform.interceptor';
 import { CustomValidationPipe } from '../pipes/validation.pipe';
 
 @Controller('auth')
-@UseInterceptors(TransformInterceptor)
 export class AuthController {
   constructor(private authService: AuthService) {}
 
