@@ -1,12 +1,17 @@
-import { Module } from '@nestjs/common';
+import { Module, Logger } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
+
+import { AuthModule } from '../auth/auth.module';
 import { LivesController } from './lives.controller';
-import { LivesService } from './lives.service';
 import { Lives } from './lives.model';
 import { LivesRepository } from './lives.repository';
+import { LivesService } from './lives.service';
+
+const logger = new Logger('LivesModule');
+logger.log('Initializing LivesModule with AuthModule integration');
 
 @Module({
-  imports: [SequelizeModule.forFeature([Lives])],
+  imports: [SequelizeModule.forFeature([Lives]), AuthModule],
   controllers: [LivesController],
   providers: [LivesService, LivesRepository],
 })

@@ -8,7 +8,6 @@ import { LivesModule } from './lives/lives.module';
 import { AuthModule } from './auth/auth.module';
 import { User } from './users/users.model';
 import { UsersModule } from './users/users.module';
-import { DebugModule } from './debug/debug.module';
 
 @Module({
   imports: [
@@ -26,7 +25,6 @@ import { DebugModule } from './debug/debug.module';
     UsersModule,
     LivesModule,
     AuthModule,
-    DebugModule,
   ],
   controllers: [AppController],
   providers: [AppService],
