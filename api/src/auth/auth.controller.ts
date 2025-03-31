@@ -2,15 +2,12 @@ import {
   Controller,
   Post,
   Body,
-  UseInterceptors,
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { TransformInterceptor } from '../interceptors/transform.interceptor';
 
 @Controller('auth')
-@UseInterceptors(TransformInterceptor)
 export class AuthController {
   constructor(private authService: AuthService) {}
 
