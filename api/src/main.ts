@@ -14,9 +14,13 @@ async function bootstrap() {
   // Log environment variables (except sensitive ones)
   logger.log(`NODE_ENV: ${process.env.NODE_ENV}`);
 
-  // Force JWT secret to a consistent value for testing
-  process.env.JWT_SECRET = 'your-secret-key';
-  logger.log(`JWT_SECRET forced to: ${process.env.JWT_SECRET}`);
+  // Ensure JWT_SECRET is set if not already defined
+  if (!process.env.JWT_SECRET) {
+    process.env.JWT_SECRET = 'your-secret-key';
+    logger.log('JWT_SECRET not found in environment, using default');
+  } else {
+    logger.log('Using JWT_SECRET from environment');
+  }
 
   // Enable CORS
   app.enableCors();
