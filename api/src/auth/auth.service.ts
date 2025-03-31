@@ -3,6 +3,7 @@ import {
   UnauthorizedException,
   BadRequestException,
   Inject,
+  Logger,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
@@ -12,6 +13,8 @@ import { RegisterDto } from './dto/register.dto';
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
+
   constructor(
     @Inject(UsersService) private usersService: UsersService,
     private jwtService: JwtService,
@@ -25,23 +28,36 @@ export class AuthService {
   }
 
   async validateUser(email: string, password: string): Promise<any> {
+    this.logger.log(`Attempting to validate user: ${email}`);
     const user = await this.usersService.findByEmail(email);
     if (user && (await user.validatePassword(password))) {
+      this.logger.log(`User validated successfully: ${email}`);
       const { password, ...result } = user.toJSON();
       return result;
     }
+    this.logger.warn(`Failed to validate user: ${email}`);
     return null;
   }
 
   async login(email: string, password: string) {
+    this.logger.log(`Login attempt for: ${email}`);
     const user = await this.validateUser(email, password);
     if (!user) {
+      this.logger.warn(`Login failed for: ${email}`);
       throw new UnauthorizedException('Invalid credentials');
     }
 
     const payload = { email: user.email, sub: user.id };
+    this.logger.log(`Creating token with payload: ${JSON.stringify(payload)}`);
+    this.logger.log(
+      `JWT Secret: ${process.env.JWT_SECRET || 'your-secret-key'}`,
+    );
+
+    const token = this.jwtService.sign(payload);
+    this.logger.log(`Generated token: ${token}`);
+
     return {
-      access_token: this.jwtService.sign(payload),
+      access_token: token,
       user,
     };
   }
