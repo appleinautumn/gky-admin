@@ -1,0 +1,381 @@
+---
+// LiveStreamForm.astro - Form to update live stream URLs
+---
+
+<div class="bg-white shadow rounded-lg p-6 mt-6">
+  <h2 class="text-lg font-medium text-gray-900">Live Stream Management</h2>
+  <p class="mt-1 text-sm text-gray-500 mb-4">
+    Update the live stream URLs for each service. These URLs will be displayed
+    on the church website for online services.
+  </p>
+  <div class="bg-blue-50 p-4 rounded-md mb-4">
+    <div class="flex">
+      <div class="flex-shrink-0">
+        <svg
+          class="h-5 w-5 text-blue-400"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+          aria-hidden="true"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+            clip-rule="evenodd"></path>
+        </svg>
+      </div>
+      <div class="ml-3 flex-1 md:flex md:justify-between">
+        <p class="text-sm text-blue-700">
+          Enter YouTube or other streaming platform URLs. Leave a field empty to
+          hide that service from the live streams page.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <form id="liveStreamForm" class="space-y-4">
+    <div>
+      <label for="ku1live" class="block text-sm font-medium text-gray-700">
+        KU1 Live Stream URL <span class="text-gray-500"
+          >(Sunday Morning Service)</span
+        >
+      </label>
+      <input
+        type="url"
+        id="ku1live"
+        name="ku1live"
+        placeholder="https://www.youtube.com/watch?v=example1"
+        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+      />
+      <p class="mt-1 text-xs text-gray-500">
+        Example: YouTube, Facebook, or other streaming platform URL
+      </p>
+    </div>
+
+    <div>
+      <label for="ku2live" class="block text-sm font-medium text-gray-700">
+        KU2 Live Stream URL <span class="text-gray-500"
+          >(Sunday Afternoon Service)</span
+        >
+      </label>
+      <input
+        type="url"
+        id="ku2live"
+        name="ku2live"
+        placeholder="https://www.youtube.com/watch?v=example2"
+        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+      />
+      <p class="mt-1 text-xs text-gray-500">
+        Leave empty to hide this service from the live streams page
+      </p>
+    </div>
+
+    <div>
+      <label for="ku5live" class="block text-sm font-medium text-gray-700">
+        KU5 Live Stream URL <span class="text-gray-500"
+          >(Friday Evening Service)</span
+        >
+      </label>
+      <input
+        type="url"
+        id="ku5live"
+        name="ku5live"
+        placeholder="https://www.youtube.com/watch?v=example5"
+        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+      />
+      <p class="mt-1 text-xs text-gray-500">
+        Leave empty to hide this service from the live streams page
+      </p>
+    </div>
+
+    <div id="statusMessage" class="mt-4 p-3 rounded-md hidden"></div>
+
+    <div class="flex justify-end">
+      <button
+        type="submit"
+        id="submitButton"
+        class="livestream-submit-btn inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+      >
+        Update Live Streams
+      </button>
+    </div>
+  </form>
+</div>
+
+<script is:inline>
+  // Only run this code in the browser
+  if (typeof window !== "undefined") {
+    document.addEventListener("DOMContentLoaded", () => {
+      const form = document.getElementById("liveStreamForm");
+      const statusMessage = document.getElementById("statusMessage");
+      const submitButton = document.getElementById("submitButton");
+      const ku1Input = document.getElementById("ku1live");
+      const ku2Input = document.getElementById("ku2live");
+      const ku5Input = document.getElementById("ku5live");
+
+      // Function to validate URL
+      function isValidUrl(url) {
+        if (!url) return true; // Empty URLs are valid (optional)
+        try {
+          new URL(url);
+          return true;
+        } catch (e) {
+          return false;
+        }
+      }
+
+      // Fetch current values and populate the form
+      async function fetchCurrentValues() {
+        try {
+          // Show loading state
+          if (statusMessage) {
+            statusMessage.textContent = "Loading current values...";
+            statusMessage.className =
+              "mt-2 text-sm text-blue-600 p-3 bg-blue-50 rounded-md";
+            statusMessage.classList.remove("hidden");
+          }
+
+          // Prepare headers based on whether we have a session
+          const headers = {};
+          const session = localStorage.getItem("session");
+
+          if (session) {
+            try {
+              const { token } = JSON.parse(session);
+              if (token) {
+                headers.Authorization = `Bearer ${token}`;
+              }
+            } catch (e) {
+              console.error("Error parsing session:", e);
+            }
+          }
+
+          const response = await fetch("http://localhost:3000/lives", {
+            headers,
+          });
+
+          if (response.ok) {
+            let data;
+            try {
+              const responseJson = await response.json();
+              console.log("Raw API response:", responseJson);
+
+              // Handle nested "data" field in the response
+              if (responseJson.data) {
+                data = responseJson.data;
+                // Handle if data is an array (get the first item)
+                if (Array.isArray(data) && data.length > 0) {
+                  data = data[0];
+                }
+              } else {
+                // Fallback if response doesn't have data field
+                data = responseJson;
+                // Check if it's directly an array
+                if (Array.isArray(data) && data.length > 0) {
+                  data = data[0];
+                }
+              }
+            } catch (e) {
+              console.error("Error parsing API response:", e);
+              data = {}; // Set empty data as fallback
+            }
+
+            console.log("Livestream data:", data);
+
+            // Populate form fields with current values
+            if (ku1Input) {
+              ku1Input.value = data.ku1live || "";
+              console.log("Set ku1live to:", data.ku1live);
+            }
+            if (ku2Input) {
+              ku2Input.value = data.ku2live || "";
+              console.log("Set ku2live to:", data.ku2live);
+            }
+            if (ku5Input) {
+              ku5Input.value = data.ku5live || "";
+              console.log("Set ku5live to:", data.ku5live);
+            }
+
+            // Clear status message
+            if (statusMessage) statusMessage.classList.add("hidden");
+          } else {
+            // Show error message
+            if (statusMessage) {
+              statusMessage.textContent =
+                "Could not load current values. Please try again.";
+              statusMessage.className =
+                "mt-2 text-sm text-red-600 p-3 bg-red-50 rounded-md";
+              statusMessage.classList.remove("hidden");
+            }
+          }
+        } catch (error) {
+          console.error("Error fetching current values:", error);
+          if (statusMessage) {
+            statusMessage.textContent =
+              "Could not connect to the server. Please check your connection and try again.";
+            statusMessage.className =
+              "mt-2 text-sm text-red-600 p-3 bg-red-50 rounded-md";
+            statusMessage.classList.remove("hidden");
+          }
+        }
+      }
+
+      // Call the function to fetch current values
+      fetchCurrentValues();
+
+      // Handle form submission
+      if (form) {
+        form.addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          // Get form data
+          const formData = new FormData(form);
+          // Get form data and ensure we have strings (empty string is valid)
+          const ku1live = formData.get("ku1live") || "";
+          const ku2live = formData.get("ku2live") || "";
+          const ku5live = formData.get("ku5live") || "";
+
+          console.log("Submitting values:", { ku1live, ku2live, ku5live });
+
+          // Validate URLs
+          if (
+            !isValidUrl(ku1live) ||
+            !isValidUrl(ku2live) ||
+            !isValidUrl(ku5live)
+          ) {
+            if (statusMessage) {
+              statusMessage.textContent =
+                "Please enter valid URLs or leave fields empty";
+              statusMessage.className =
+                "mt-2 text-sm text-red-600 p-3 bg-red-50 rounded-md";
+              statusMessage.classList.remove("hidden");
+            }
+            return;
+          }
+
+          // Set loading state
+          if (submitButton) {
+            submitButton.disabled = true;
+            submitButton.textContent = "Updating...";
+          }
+
+          if (statusMessage) {
+            statusMessage.textContent = "Updating live stream URLs...";
+            statusMessage.className =
+              "mt-2 text-sm text-blue-600 p-3 bg-blue-50 rounded-md";
+            statusMessage.classList.remove("hidden");
+          }
+
+          const livestreamData = { ku1live, ku2live, ku5live };
+
+          try {
+            // Prepare headers for the request
+            const headers = {
+              "Content-Type": "application/json",
+            };
+
+            // Add auth token if available
+            const session = localStorage.getItem("session");
+            if (session) {
+              try {
+                const { token } = JSON.parse(session);
+                if (token) {
+                  headers.Authorization = `Bearer ${token}`;
+                }
+              } catch (e) {
+                console.error("Error parsing session:", e);
+              }
+            }
+
+            // Log what we're sending to the API
+            console.log("Sending data to API:", livestreamData);
+            console.log("Using headers:", headers);
+            console.log("Request URL:", "http://localhost:3000/lives/1");
+
+            // Submit the data to the API
+            const response = await fetch("http://localhost:3000/lives/1", {
+              method: "PUT",
+              headers,
+              body: JSON.stringify(livestreamData),
+            });
+
+            console.log("Status code:", response.status);
+
+            if (response.ok) {
+              // Log the successful response if possible
+              try {
+                const responseData = await response.clone().json();
+                console.log("Success response:", responseData);
+              } catch (e) {
+                console.log("Couldn't parse success response as JSON");
+              }
+
+              // Show success message
+              if (statusMessage) {
+                statusMessage.textContent =
+                  "Live stream URLs updated successfully!";
+                statusMessage.className =
+                  "mt-2 text-sm text-green-600 p-3 bg-green-50 rounded-md";
+                statusMessage.classList.remove("hidden");
+              }
+
+              // Refetch the data to show the updated values
+              setTimeout(() => {
+                fetchCurrentValues();
+              }, 1000);
+            } else {
+              let errorData;
+              try {
+                const responseJson = await response.json();
+                console.error("Error response:", responseJson);
+
+                // Check if error is inside a data property
+                if (responseJson.data && responseJson.data.message) {
+                  errorData = responseJson.data;
+                } else {
+                  errorData = responseJson;
+                }
+              } catch (e) {
+                console.error("Error parsing error response:", e);
+                errorData = { message: "Failed to update live stream URLs" };
+              }
+              throw new Error(
+                errorData.message || "Failed to update live stream URLs"
+              );
+            }
+          } catch (error) {
+            // Show error message
+            console.error("Error updating livestream:", error);
+            if (statusMessage) {
+              let errorMessage = "An unexpected error occurred";
+
+              if (error instanceof Error) {
+                errorMessage = error.message;
+              }
+
+              // If it's a network error (can't connect to the server)
+              if (
+                error instanceof TypeError &&
+                error.message.includes("fetch")
+              ) {
+                errorMessage =
+                  "Could not connect to the server. Please check your connection and try again.";
+              }
+
+              statusMessage.textContent = errorMessage;
+              statusMessage.className =
+                "mt-2 text-sm text-red-600 p-3 bg-red-50 rounded-md";
+              statusMessage.classList.remove("hidden");
+            }
+          } finally {
+            // Reset button state
+            if (submitButton) {
+              submitButton.disabled = false;
+              submitButton.textContent = "Update Live Streams";
+            }
+          }
+        });
+      }
+    });
+  }
+</script>
