@@ -11,17 +11,17 @@ interface CountResult {
 }
 
 @Injectable()
-export class LivesRepository {
+export class LinksRepository {
   constructor(private sequelize: Sequelize) {}
 
   async findAll(): Promise<any[]> {
-    const sql = 'SELECT * FROM lives';
+    const sql = 'SELECT * FROM links';
     const [results] = await this.sequelize.query(sql);
     return results;
   }
 
   async findById(id: number): Promise<any> {
-    const sql = 'SELECT * FROM lives WHERE id = :id';
+    const sql = 'SELECT * FROM links WHERE id = :id';
     const [results] = await this.sequelize.query(sql, {
       replacements: { id },
     });
@@ -34,7 +34,7 @@ export class LivesRepository {
     ku5live: string,
   ): Promise<any> {
     const sql = `
-      INSERT INTO lives (ku1live, ku2live, ku5live, created_at, updated_at)
+      INSERT INTO links (ku1live, ku2live, ku5live, created_at, updated_at)
       VALUES (:ku1live, :ku2live, :ku5live, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
     `;
     const [result] = await this.sequelize.query(sql, {
@@ -52,12 +52,12 @@ export class LivesRepository {
     // Check if the record exists
     const existingRecord = await this.findById(id);
     if (!existingRecord) {
-      throw new NotFoundException(`No live stream found with id ${id}`);
+      throw new NotFoundException(`No link found with id ${id}`);
     }
 
     // If record exists, perform the update
     const updateSql = `
-      UPDATE lives
+      UPDATE links
       SET ku1live = :ku1live, ku2live = :ku2live, ku5live = :ku5live, updated_at = CURRENT_TIMESTAMP
       WHERE id = :id
     `;
@@ -69,7 +69,7 @@ export class LivesRepository {
   }
 
   async delete(id: number): Promise<any> {
-    const sql = 'DELETE FROM lives WHERE id = :id';
+    const sql = 'DELETE FROM links WHERE id = :id';
     const [result] = await this.sequelize.query(sql, {
       replacements: { id },
     });

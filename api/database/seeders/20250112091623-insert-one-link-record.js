@@ -3,7 +3,7 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.bulkInsert(
-      'lives',
+      'links',
       [
         {
           ku1live: 'https://www.youtube.com/watch?v=XqZsoesa55w',
@@ -19,6 +19,6 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    // await queryInterface.bulkDelete('lives', null, {});
+    // await queryInterface.bulkDelete('links', null, {});
   },
 };

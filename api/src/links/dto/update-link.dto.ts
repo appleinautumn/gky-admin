@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsUrl } from 'class-validator';
 
-export class UpdateLiveDto {
+export class UpdateLinkDto {
   @IsNotEmpty({ message: 'ku1live is required' })
   @IsUrl(
     {

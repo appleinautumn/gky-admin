@@ -1,10 +1,10 @@
 import { Column, Model, Table, DataType } from 'sequelize-typescript';
 
 @Table({
-  tableName: 'lives',
+  tableName: 'links',
   timestamps: true, // to handle `created_at` and `updated_at`
 })
-export class Lives extends Model<Lives> {
+export class Links extends Model<Links> {
   @Column(DataType.STRING)
   ku1live: string;
 

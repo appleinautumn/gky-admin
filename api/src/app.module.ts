@@ -4,10 +4,11 @@ import { SequelizeModule } from '@nestjs/sequelize';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { LivesModule } from './lives/lives.module';
+import { LinksModule } from './links/links.module';
 import { AuthModule } from './auth/auth.module';
 import { User } from './users/users.model';
 import { UsersModule } from './users/users.module';
+import { Links } from './links/links.model';
 
 @Module({
   imports: [
@@ -20,10 +21,10 @@ import { UsersModule } from './users/users.module';
       storage: process.env.DB_NAME,
       logging: process.env.DB_LOGGING === 'true',
       synchronize: false,
-      models: [User],
+      models: [User, Links],
     }),
     UsersModule,
-    LivesModule,
+    LinksModule,
     AuthModule,
   ],
   controllers: [AppController],

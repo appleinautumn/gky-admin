@@ -78,6 +78,7 @@ The script will:
 5. Return the created user information (without the password)
 
 Output example:
+
 ```
 User registered successfully: {
   id: 2,
@@ -97,10 +98,10 @@ The API exposes the following endpoints:
 
 - `POST /auth/login` - Login with email and password
 
-### Lives Management
+### Links Management
 
-- `GET /lives` - Get all live streams
-- `PUT /lives/:id` - Update a live stream by ID
+- `GET /links` - Get all live streams
+- `PUT /links/:id` - Update a live stream by ID
 
 ### Root
 

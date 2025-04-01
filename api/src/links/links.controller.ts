@@ -11,38 +11,38 @@ import {
 } from '@nestjs/common';
 
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { UpdateLiveDto } from './dto/update-live.dto';
-import { LivesService } from './lives.service';
+import { UpdateLinkDto } from './dto/update-link.dto';
+import { LinksService } from './links.service';
 
-@Controller('lives')
-export class LivesController {
-  private readonly logger = new Logger(LivesController.name);
+@Controller('links')
+export class LinksController {
+  private readonly logger = new Logger(LinksController.name);
 
-  constructor(private readonly livesService: LivesService) {}
+  constructor(private readonly linksService: LinksService) {}
 
   @Get()
   @UseGuards(JwtAuthGuard)
   async getAll(@Request() req) {
     this.logger.log('Authenticated request to getAll()');
     this.logger.log(`User: ${JSON.stringify(req.user)}`);
-    return this.livesService.getAllLives();
+    return this.linksService.getAllLinks();
   }
 
   @Put(':id')
   @UseGuards(JwtAuthGuard)
   async update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateLiveDto: UpdateLiveDto,
+    @Body() updateLinkDto: UpdateLinkDto,
     @Request() req,
   ) {
     this.logger.log(`Authenticated request to update() for id: ${id}`);
     this.logger.log(`User: ${JSON.stringify(req.user)}`);
     // If validation passes, proceed with the update
-    return this.livesService.updateLive(
+    return this.linksService.updateLink(
       id,
-      updateLiveDto.ku1live,
-      updateLiveDto.ku2live,
-      updateLiveDto.ku5live,
+      updateLinkDto.ku1live,
+      updateLinkDto.ku2live,
+      updateLinkDto.ku5live,
     );
   }
 }
