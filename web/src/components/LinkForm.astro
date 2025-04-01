@@ -1,12 +1,12 @@
 ---
-// LiveStreamForm.astro - Form to update live stream URLs
+// LinkForm.astro - Form to update link URLs
 ---
 
 <div class="bg-white shadow rounded-lg p-6 mt-6">
-  <h2 class="text-lg font-medium text-gray-900">Live Stream Management</h2>
+  <h2 class="text-lg font-medium text-gray-900">Link Management</h2>
   <p class="mt-1 text-sm text-gray-500 mb-4">
-    Update the live stream URLs for each service. These URLs will be displayed
-    on the church website for online services.
+    Update the link URLs for each service. These URLs will be displayed on the
+    church website for online services.
   </p>
   <div class="bg-blue-50 p-4 rounded-md mb-4">
     <div class="flex">
@@ -27,23 +27,21 @@
       <div class="ml-3 flex-1 md:flex md:justify-between">
         <p class="text-sm text-blue-700">
           Enter YouTube or other streaming platform URLs. Leave a field empty to
-          hide that service from the live streams page.
+          hide that service from the links page.
         </p>
       </div>
     </div>
   </div>
 
-  <form id="liveStreamForm" class="space-y-4">
+  <form id="linkForm" class="space-y-4">
     <div>
-      <label for="ku1live" class="block text-sm font-medium text-gray-700">
-        KU1 Live Stream URL <span class="text-gray-500"
-          >(Sunday Morning Service)</span
-        >
+      <label for="ku1link" class="block text-sm font-medium text-gray-700">
+        KU1 Link URL <span class="text-gray-500">(Sunday Morning Service)</span>
       </label>
       <input
         type="url"
-        id="ku1live"
-        name="ku1live"
+        id="ku1link"
+        name="ku1link"
         placeholder="https://www.youtube.com/watch?v=example1"
         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
       />
@@ -53,38 +51,36 @@
     </div>
 
     <div>
-      <label for="ku2live" class="block text-sm font-medium text-gray-700">
-        KU2 Live Stream URL <span class="text-gray-500"
+      <label for="ku2link" class="block text-sm font-medium text-gray-700">
+        KU2 Link URL <span class="text-gray-500"
           >(Sunday Afternoon Service)</span
         >
       </label>
       <input
         type="url"
-        id="ku2live"
-        name="ku2live"
+        id="ku2link"
+        name="ku2link"
         placeholder="https://www.youtube.com/watch?v=example2"
         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
       />
       <p class="mt-1 text-xs text-gray-500">
-        Leave empty to hide this service from the live streams page
+        Leave empty to hide this service from the links page
       </p>
     </div>
 
     <div>
-      <label for="ku5live" class="block text-sm font-medium text-gray-700">
-        KU5 Live Stream URL <span class="text-gray-500"
-          >(Friday Evening Service)</span
-        >
+      <label for="ku5link" class="block text-sm font-medium text-gray-700">
+        KU5 Link URL <span class="text-gray-500">(Friday Evening Service)</span>
       </label>
       <input
         type="url"
-        id="ku5live"
-        name="ku5live"
+        id="ku5link"
+        name="ku5link"
         placeholder="https://www.youtube.com/watch?v=example5"
         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
       />
       <p class="mt-1 text-xs text-gray-500">
-        Leave empty to hide this service from the live streams page
+        Leave empty to hide this service from the links page
       </p>
     </div>
 
@@ -94,9 +90,9 @@
       <button
         type="submit"
         id="submitButton"
-        class="livestream-submit-btn inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        class="link-submit-btn inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
       >
-        Update Live Streams
+        Update Links
       </button>
     </div>
   </form>
@@ -106,12 +102,12 @@
   // Only run this code in the browser
   if (typeof window !== "undefined") {
     document.addEventListener("DOMContentLoaded", () => {
-      const form = document.getElementById("liveStreamForm");
+      const form = document.getElementById("linkForm");
       const statusMessage = document.getElementById("statusMessage");
       const submitButton = document.getElementById("submitButton");
-      const ku1Input = document.getElementById("ku1live");
-      const ku2Input = document.getElementById("ku2live");
-      const ku5Input = document.getElementById("ku5live");
+      const ku1Input = document.getElementById("ku1link");
+      const ku2Input = document.getElementById("ku2link");
+      const ku5Input = document.getElementById("ku5link");
 
       // Function to validate URL
       function isValidUrl(url) {
@@ -150,7 +146,7 @@
             }
           }
 
-          const response = await fetch("http://localhost:3000/lives", {
+          const response = await fetch("http://localhost:3000/links", {
             headers,
           });
 
@@ -180,20 +176,20 @@
               data = {}; // Set empty data as fallback
             }
 
-            console.log("Livestream data:", data);
+            console.log("Link data:", data);
 
             // Populate form fields with current values
             if (ku1Input) {
-              ku1Input.value = data.ku1live || "";
-              console.log("Set ku1live to:", data.ku1live);
+              ku1Input.value = data.ku1link || "";
+              console.log("Set ku1link to:", data.ku1link);
             }
             if (ku2Input) {
-              ku2Input.value = data.ku2live || "";
-              console.log("Set ku2live to:", data.ku2live);
+              ku2Input.value = data.ku2link || "";
+              console.log("Set ku2link to:", data.ku2link);
             }
             if (ku5Input) {
-              ku5Input.value = data.ku5live || "";
-              console.log("Set ku5live to:", data.ku5live);
+              ku5Input.value = data.ku5link || "";
+              console.log("Set ku5link to:", data.ku5link);
             }
 
             // Clear status message
@@ -231,17 +227,17 @@
           // Get form data
           const formData = new FormData(form);
           // Get form data and ensure we have strings (empty string is valid)
-          const ku1live = formData.get("ku1live") || "";
-          const ku2live = formData.get("ku2live") || "";
-          const ku5live = formData.get("ku5live") || "";
+          const ku1link = formData.get("ku1link") || "";
+          const ku2link = formData.get("ku2link") || "";
+          const ku5link = formData.get("ku5link") || "";
 
-          console.log("Submitting values:", { ku1live, ku2live, ku5live });
+          console.log("Submitting values:", { ku1link, ku2link, ku5link });
 
           // Validate URLs
           if (
-            !isValidUrl(ku1live) ||
-            !isValidUrl(ku2live) ||
-            !isValidUrl(ku5live)
+            !isValidUrl(ku1link) ||
+            !isValidUrl(ku2link) ||
+            !isValidUrl(ku5link)
           ) {
             if (statusMessage) {
               statusMessage.textContent =
@@ -260,13 +256,13 @@
           }
 
           if (statusMessage) {
-            statusMessage.textContent = "Updating live stream URLs...";
+            statusMessage.textContent = "Updating link URLs...";
             statusMessage.className =
               "mt-2 text-sm text-blue-600 p-3 bg-blue-50 rounded-md";
             statusMessage.classList.remove("hidden");
           }
 
-          const livestreamData = { ku1live, ku2live, ku5live };
+          const linkData = { ku1link, ku2link, ku5link };
 
           try {
             // Prepare headers for the request
@@ -288,15 +284,15 @@
             }
 
             // Log what we're sending to the API
-            console.log("Sending data to API:", livestreamData);
+            console.log("Sending data to API:", linkData);
             console.log("Using headers:", headers);
-            console.log("Request URL:", "http://localhost:3000/lives/1");
+            console.log("Request URL:", "http://localhost:3000/links/1");
 
             // Submit the data to the API
-            const response = await fetch("http://localhost:3000/lives/1", {
+            const response = await fetch("http://localhost:3000/links/1", {
               method: "PUT",
               headers,
-              body: JSON.stringify(livestreamData),
+              body: JSON.stringify(linkData),
             });
 
             console.log("Status code:", response.status);
@@ -312,8 +308,7 @@
 
               // Show success message
               if (statusMessage) {
-                statusMessage.textContent =
-                  "Live stream URLs updated successfully!";
+                statusMessage.textContent = "Link URLs updated successfully!";
                 statusMessage.className =
                   "mt-2 text-sm text-green-600 p-3 bg-green-50 rounded-md";
                 statusMessage.classList.remove("hidden");
@@ -337,15 +332,15 @@
                 }
               } catch (e) {
                 console.error("Error parsing error response:", e);
-                errorData = { message: "Failed to update live stream URLs" };
+                errorData = { message: "Failed to update link URLs" };
               }
               throw new Error(
-                errorData.message || "Failed to update live stream URLs"
+                errorData.message || "Failed to update link URLs"
               );
             }
           } catch (error) {
             // Show error message
-            console.error("Error updating livestream:", error);
+            console.error("Error updating links:", error);
             if (statusMessage) {
               let errorMessage = "An unexpected error occurred";
 
@@ -371,7 +366,7 @@
             // Reset button state
             if (submitButton) {
               submitButton.disabled = false;
-              submitButton.textContent = "Update Live Streams";
+              submitButton.textContent = "Update Links";
             }
           }
         });
