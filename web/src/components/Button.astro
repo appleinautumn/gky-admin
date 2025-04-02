@@ -1,19 +1,81 @@
 ---
-// Click button, get confetti!
-// Styled by Tailwind :)
+// Button.astro component
+interface Props {
+  type?: string;
+  class?: string;
+  id?: string;
+  variant?: "primary" | "secondary" | "danger" | "success";
+  size?: "sm" | "md" | "lg";
+  disabled?: boolean;
+}
+
+const {
+  type = "button",
+  class: className = "",
+  id,
+  variant = "primary",
+  size = "md",
+  disabled = false,
+} = Astro.props;
+
+const variantClasses = {
+  primary: "bg-indigo-600 text-white hover:bg-indigo-700 focus:ring-indigo-500",
+  secondary: "bg-gray-200 text-gray-800 hover:bg-gray-300 focus:ring-gray-500",
+  danger: "bg-red-600 text-white hover:bg-red-700 focus:ring-red-500",
+  success: "bg-green-600 text-white hover:bg-green-700 focus:ring-green-500",
+};
+
+const sizeClasses = {
+  sm: "py-1 px-3 text-sm",
+  md: "py-2 px-4",
+  lg: "py-3 px-6 text-lg",
+};
+
+const baseClasses =
+  "inline-flex justify-center items-center font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors duration-200 ease-in-out";
 ---
 
 <button
-	class="appearance-none py-2 px-4 bg-purple-500 text-white font-semibold rounded-lg shadow-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-opacity-75"
+  type={type}
+  id={id}
+  disabled={disabled}
+  class:list={[
+    baseClasses,
+    variantClasses[variant],
+    sizeClasses[size],
+    disabled ? "opacity-50 cursor-not-allowed" : "",
+    className,
+  ]}
 >
-	<slot />
+  <slot />
 </button>
 
 <script>
-	import confetti from 'canvas-confetti';
-	const button = document.body.querySelector('button');
+  // Only add confetti to non-submit buttons to avoid triggering on form submissions
+  const buttons = document.querySelectorAll(
+    'button:not([type="submit"]):not([id="submitButton"])'
+  );
 
-	if (button) {
-		button.addEventListener('click', () => confetti());
-	}
+  if (typeof window !== "undefined") {
+    // Dynamically import the confetti library only when it's needed
+    import("canvas-confetti")
+      .then((confettiModule) => {
+        const confetti = confettiModule.default;
+
+        buttons.forEach((button) => {
+          if (!button.disabled) {
+            button.addEventListener("click", () => {
+              confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 },
+              });
+            });
+          }
+        });
+      })
+      .catch((err) => {
+        console.error("Failed to load confetti:", err);
+      });
+  }
 </script>
