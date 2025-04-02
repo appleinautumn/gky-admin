@@ -1,5 +1,5 @@
 ---
-import Button from './Button.astro';
+import Button from "./Button.astro";
 ---
 
 <nav class="bg-white shadow">
@@ -10,13 +10,9 @@ import Button from './Button.astro';
           <h1 class="text-xl font-bold">My App</h1>
         </div>
       </div>
-      
+
       <div class="flex items-center">
-        <Button
-          id="logoutButton"
-          variant="primary"
-          class="ml-3"
-        >
+        <Button id="logoutButton" variant="primary" class="ml-3">
           Logout
         </Button>
       </div>
@@ -25,12 +21,28 @@ import Button from './Button.astro';
 </nav>
 
 <script>
-  const logoutButton = document.getElementById('logoutButton');
-  
-  logoutButton?.addEventListener('click', () => {
-    // Clear session
-    localStorage.removeItem('session');
-    // Redirect to login
-    window.location.href = '/login';
+  const logoutButton = document.getElementById("logoutButton");
+
+  logoutButton?.addEventListener("click", async () => {
+    try {
+      // Call logout endpoint to clear the HTTP-only cookie on the server
+      const response = await fetch("http://localhost:3000/auth/logout", {
+        method: "POST",
+        credentials: "include", // Include cookies with the request
+      });
+
+      if (response.ok) {
+        // Also clear any client-side stored data like rememberedEmail
+        localStorage.removeItem("rememberedEmail");
+      } else {
+        console.error("Logout failed");
+      }
+    } catch (error) {
+      console.error("Logout error:", error);
+    } finally {
+      // Always redirect to login page, even if the server request fails
+      window.location.href = "/login";
+    }
   });
-</script> 
+</script>
+
