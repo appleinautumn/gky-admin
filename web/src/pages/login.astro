@@ -1,19 +1,60 @@
 ---
-import MainLayout from '../layouts/main.astro';
-import LoginForm from '../components/LoginForm.astro';
-
-// If already logged in, redirect to dashboard
-const session = localStorage.getItem('session');
-if (session) {
-  return Astro.redirect('/dashboard');
-}
+import MainLayout from "../layouts/main.astro";
+import LoginForm from "../components/LoginForm.astro";
 ---
 
-<MainLayout title="Login">
-  <main class="min-h-screen flex items-center justify-center bg-gray-100">
-    <div class="max-w-md w-full bg-white rounded-lg shadow-md p-8">
-      <h1 class="text-2xl font-bold text-center mb-6">Login</h1>
-      <LoginForm />
+<MainLayout title="Login to GKY Admin">
+  <script>
+    // Check if user already has a valid JWT token
+    if (typeof window !== "undefined") {
+      function checkAuthStatus() {
+        // Check for token in localStorage
+        const session = localStorage.getItem("session");
+
+        if (session) {
+          try {
+            // Parse the session data
+            const sessionData = JSON.parse(session);
+
+            // If we have a token, redirect to dashboard
+            if (sessionData && sessionData.token) {
+              window.location.href = "/dashboard";
+            }
+          } catch (error) {
+            // Invalid session data, clear it
+            console.error("Invalid session data");
+            localStorage.removeItem("session");
+          }
+        }
+        // If no session found, stay on login page (do nothing)
+      }
+
+      // Run the check
+      checkAuthStatus();
+    }
+  </script>
+  <main
+    class="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-indigo-50 to-white"
+  >
+    <div
+      class="max-w-md w-full bg-white rounded-xl shadow-xl overflow-hidden p-8 space-y-8"
+    >
+      <div class="text-center">
+        <h2 class="text-3xl font-extrabold text-gray-900 tracking-tight">
+          GKY Greenville
+        </h2>
+        <p class="mt-2 text-sm text-gray-600">
+          Sign in to access your GKY Admin account
+        </p>
+      </div>
+
+      <div class="border-t border-gray-200 py-6">
+        <LoginForm />
+      </div>
     </div>
+
+    <footer class="mt-8 text-center text-xs text-gray-500">
+      <p>© 2025 GKY Admin. All rights reserved.</p>
+    </footer>
   </main>
-</MainLayout> 
+</MainLayout>
