@@ -1,48 +1,62 @@
 ---
 import MainLayout from "../layouts/main.astro";
 import DashboardNav from "../components/DashboardNav.astro";
-import LiveStreamForm from "../components/LiveStreamForm.astro";
+import LinkForm from "../components/LinkForm.astro";
 ---
 
-<MainLayout content={{ title: "Dashboard" }}>
+<MainLayout title="Dashboard">
   <script>
-    // Client-side authentication check
+    // Client-side authentication check using JWT token
     if (typeof window !== "undefined") {
-      const session = localStorage.getItem("session");
+      function checkAuthAndLoadUserInfo() {
+        // Check for token in localStorage
+        const session = localStorage.getItem("session");
 
-      // For the demo, if no session exists, create a temp one
-      if (!session) {
-        // For development only - in production, redirect to login
-        // window.location.href = "/login";
-        // return;
+        if (!session) {
+          // No session found, redirect to login
+          window.location.href = "/login";
+          return;
+        }
 
-        // Create a temporary session for demonstration purposes
-        const tempSession = {
-          user: { firstName: "Admin", lastName: "User" },
-          token: "demo-token",
-        };
-        localStorage.setItem("session", JSON.stringify(tempSession));
-
-        document.addEventListener("DOMContentLoaded", () => {
-          const welcomeMessage = document.querySelector(".welcome-message");
-          if (welcomeMessage) {
-            welcomeMessage.textContent = `Welcome, ${tempSession.user.firstName}!`;
-          }
-        });
-      } else {
-        // Use the existing session
         try {
-          const user = JSON.parse(session).user;
+          // Parse the session data
+          const sessionData = JSON.parse(session);
+
+          // If no token, redirect to login
+          if (!sessionData || !sessionData.token) {
+            localStorage.removeItem("session");
+            window.location.href = "/login";
+            return;
+          }
+
+          // Get user info from session data
+          const user = sessionData.user;
+
+          // Update welcome message with user info
+          document.addEventListener("DOMContentLoaded", () => {
+            const welcomeMessage = document.querySelector(".welcome-message");
+            if (welcomeMessage && user) {
+              welcomeMessage.textContent = `Welcome, ${user.firstName || "Admin"}!`;
+            }
+          });
+        } catch (error) {
+          console.error("Auth check failed:", error);
+          localStorage.removeItem("session");
+
+          // For development only - create a temporary session for demonstration
+          const tempUser = { firstName: "Admin", lastName: "User" };
+
           document.addEventListener("DOMContentLoaded", () => {
             const welcomeMessage = document.querySelector(".welcome-message");
             if (welcomeMessage) {
-              welcomeMessage.textContent = `Welcome, ${user?.firstName || "Admin"}!`;
+              welcomeMessage.textContent = `Welcome, ${tempUser.firstName}! (Demo Mode)`;
             }
           });
-        } catch (e) {
-          console.error("Error parsing session:", e);
         }
       }
+
+      // Run the authentication check
+      checkAuthAndLoadUserInfo();
     }
   </script>
   <div class="min-h-screen bg-gray-100">
@@ -62,7 +76,7 @@ import LiveStreamForm from "../components/LiveStreamForm.astro";
             </p>
           </div>
 
-          <LiveStreamForm />
+          <LinkForm />
         </div>
       </div>
     </main>
